@@ -2,6 +2,201 @@
 
 
 
+## 经典十大排序 :
+
+**1. 冒泡排序**
+
+```c++
+void MySort(vector<int>& ss)
+{
+    for(int i = 0; i < ss.size() - 1; ++i){
+        for (int j = 0; j < ss.size() - 1 - i; ++j){
+            if (ss[j] > ss[j+1]){
+                int temp = ss[j];
+                ss[j] = ss[j+1];
+                ss[j+1] = temp;
+            }
+        }
+    }
+}
+```
+
+**2. 快速排序**
+
+```c++
+void MySort(vector<int>& ss, int l, int r)
+{
+	if (l>=r) return;
+	int i = l, j = r;
+	int x = ss[l];
+	while(i < j){
+		while(i < j && x <= ss[j]){
+			j--;
+		}
+		ss[i] = ss[j];
+		while(i < j && x >= ss[i]){
+			i++;
+		}
+		ss[j] = ss[i];
+	}
+	ss[i] = x;
+	MySort(ss,l,i-1);
+	MySort(ss,i+1,r);
+
+}
+```
+
+**3. 插入排序**
+
+```c++
+void MySort(vector<int>& ss)
+{
+	for(int i = 1; i < ss.size(); ++i){
+		int temp = ss[i];
+		for(int j = i - 1; j >= 0; --j){
+			if (temp < ss[j]){
+				ss[j+1] = ss[j];
+			} else {
+				ss[j+1] = temp;
+				break;
+			}
+			if(j == 0){
+				ss[j] = temp;
+			}
+		}
+	}
+
+}
+```
+
+**4. 希尔排序**
+
+```c++
+void MySort(vector<int>& ss)
+{
+	for(int i = 1; i < ss.size(); ++i){
+		for(int j = i - 1; j >= 0 && ss[j+1]<ss[j]; --j){
+			swap(ss[j],ss[j+1]);
+		}
+	}
+
+}
+```
+
+**5. 选择排序**
+
+```c++
+void MySort(vector<int>& ss)
+{
+	for(int i = 0; i < ss.size(); ++i){
+		for(int j = i + 1; j < ss.size(); ++j){
+			if(ss[j]<ss[i]){
+				swap(ss[j],ss[i]);
+			}
+		}
+	}
+
+}
+```
+
+**6. 堆排序**
+
+```c++
+void Heapify(vector<int>&ss, int begin, int end)
+{
+	for (int i = 2*begin+1; i < end; i = 2*i + 1){
+		if(i+1<end && ss[i]<ss[i+1]){
+			++i;
+		}
+		if(ss[i] > ss[begin]){
+			swap(ss[i],ss[begin]);
+			begin = i;
+		} else{
+			break;
+		}
+
+	}
+
+}
+
+void MySort(vector<int>& ss)
+{
+	int len = ss.size();
+	for(int i = (len>>1)-1; i >= 0; --i){
+		Heapify(ss,i,len);
+	}
+
+	for(int i = len - 1; i > 0; --i){
+		swap(ss[0],ss[i]);
+		Heapify(ss,0,i);
+	}
+
+}
+```
+
+**7. 归并排序**
+
+```c++
+void Merge(vector<int>& ss, int l, int m, int r, vector<int>& temp)
+{
+	int i = l;
+	int j = m + 1;
+	int t = 0;
+	while(i <= m && j <= r){
+		if(ss[i] <= ss[j]) {
+			temp[t++] = ss[i++];
+		} else {
+			temp[t++] = ss[j++];
+		}
+	} 
+
+	while(i <= m) {
+		temp[t++] = ss[i++];
+	}
+
+	while(j <= r) {
+		temp[t++] = ss[j++];
+	}
+	t = 0;
+	while(l <= r){
+		ss[l++] = temp[t++];
+	}
+}
+void MySort(vector<int>& ss, int l, int r, vector<int>& temp)
+{
+	if(l < r){
+		int mid = (l+r)>>1;
+		MySort(ss, l, mid, temp);
+		MySort(ss, mid+1, r, temp);
+		Merge(ss, l, mid, r, temp);
+	}
+}
+```
+
+**8. 计数排序**
+
+```c++
+void MySort(vector<int>& ss)
+{
+	int maxsize = *max_element(ss.begin(),ss.end());
+    int minsize = *min_element(ss.begin(),ss.end());
+	vector<int> temp(maxsize-minsize+1,0);
+	for(const auto& i : ss){
+		++temp[i-minsize];
+	}
+	int t = 0;
+	for(int i = 0; i < temp.size() && t < ss.size(); ++i){
+		while(temp[i]-->0){
+			ss[t++] = i+minsize;
+		}
+	}
+}
+```
+
+
+
+
+
 #### [1859. 将句子排序](https://leetcode-cn.com/problems/sorting-the-sentence/)
 
 * 一个 句子 指的是一个序列的单词用单个空格连接起来，且开头和结尾没有任何空格。每个单词都只包含小写或大写英文字母。
