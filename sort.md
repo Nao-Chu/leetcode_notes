@@ -197,6 +197,12 @@ void MySort(vector<int>& ss)
 
 
 
+## 难度: 简单
+
+***
+
+
+
 #### [1859. 将句子排序](https://leetcode-cn.com/problems/sorting-the-sentence/)
 
 * 一个 句子 指的是一个序列的单词用单个空格连接起来，且开头和结尾没有任何空格。每个单词都只包含小写或大写英文字母。
@@ -813,6 +819,97 @@ void MySort(vector<int>& ss)
                   return false;
           }
           return true;
+      }
+  };
+  ```
+
+  
+
+
+
+## 难度: 中等
+
+***
+
+#### [1329. 将矩阵按对角线排序](https://leetcode-cn.com/problems/sort-the-matrix-diagonally/)
+
+* 矩阵对角线 是一条从矩阵最上面行或者最左侧列中的某个元素开始的对角线，沿右下方向一直到矩阵末尾的元素。例如，矩阵 mat 有 6 行 3 列，从 mat[2][0] 开始的 矩阵对角线 将会经过 mat[2][0]、mat[3][1] 和 mat[4][2] 。
+
+* 给你一个 m * n 的整数矩阵 mat ，请你将同一条 矩阵对角线 上的元素按升序排序后，返回排好序的矩阵。
+
+* 实例一:
+
+  ```
+  输入：mat = [[3,3,1,1],[2,2,1,2],[1,1,1,2]]
+  输出：[[1,1,1,1],[1,2,2,2],[1,2,3,3]]
+  ```
+
+* 提示：
+
+  ```
+  m == mat.length
+  n == mat[i].length
+  1 <= m, n <= 100
+  1 <= mat[i][j] <= 100
+  ```
+
+* 解法一、按顺序获取值,然后使用希尔排序
+
+  ```c++
+  class Solution {
+  public:
+      vector<vector<int>> diagonalSort(vector<vector<int>>& mat) { 
+  
+          for(int i = 0; i < mat.size(); ++i){
+              for(int j = i + 1,t = 1; j < mat.size()&&t < mat[j].size(); ++j,++t) {
+                  for(int m = j-1, n = t-1;m >= 0&&n >= 0;--m,--n){
+                      if (mat[m+1][n+1] < mat[m][n])
+                      {
+                          swap(mat[m+1][n+1],mat[m][n]);
+                      }
+                  }
+              }
+          }
+  
+          for(int i = 0; i < mat[0].size(); ++i){
+              for(int j = i+1, t = 1; j < mat[0].size() && t < mat.size(); ++j,++t){
+                  for(int m = t-1, n = j-1;m >= 0&&n >= 0;--m,--n){
+                      if (mat[m+1][n+1] < mat[m][n])
+                      {
+                          swap(mat[m+1][n+1],mat[m][n]);
+                      }
+                  }
+              }
+          }
+          return mat;
+      }
+  };
+  ```
+
+* 解法二、根据直线公式y-x=b(45度角k==1), 用unordered_map把同一对角线的值存取起来,再进行排序
+
+  ```c++
+  class Solution {
+  public:
+      vector<vector<int>> diagonalSort(vector<vector<int>>& mat) { 
+          unordered_map<int, vector<int> > ss;
+          for(int i = 0; i < mat.size(); ++i){
+              for(int j = 0; j < mat[0].size(); ++j) {
+                  ss[j-i].push_back(mat[i][j]);
+              }
+          }
+  
+          for(auto& x : ss){
+              sort(x.second.rbegin(),x.second.rend());
+          }
+  
+          for(int i = 0; i < mat.size(); ++i){
+              for(int j = 0; j < mat[0].size(); ++j) {
+                  mat[i][j] = ss[j-i].back();
+                  ss[j-i].pop_back();
+              }
+          }
+          return mat;
       }
   };
   ```
